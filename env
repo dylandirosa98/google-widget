@@ -1,0 +1,3 @@
+   GOOGLE_PLACES_API_KEY=AIzaSyBawcjs0cFRcxYqtjFVIl_G6Ysq4MrpfkY
+   PORT=3001
+   NODE_ENV=development
