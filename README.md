@@ -240,6 +240,106 @@ google-widget/
 
 ## 🐛 Troubleshooting
 
+### "Unable to Load Reviews" Error
+
+If you see this error on your deployment, follow these steps:
+
+#### 1. Check Deployment Logs
+Visit your deployment URL with `/api/debug` to see diagnostic information:
+```
+https://your-app.up.railway.app/api/debug
+```
+
+This will show:
+- API key configuration status
+- Business search parameters
+- Cache status
+- Test API call results
+
+#### 2. Common Causes & Solutions
+
+**❌ API Key Issues**
+- **Missing API Key**: Ensure `GOOGLE_PLACES_API_KEY` is set in your deployment environment
+- **Invalid API Key**: Verify your key is correct and active
+- **API Not Enabled**: Go to [Google Cloud Console](https://console.cloud.google.com/) and enable:
+  - Places API
+  - Maps JavaScript API (if needed)
+
+**❌ API Key Restrictions**
+- Check if your API key has IP or HTTP referrer restrictions
+- For Railway/server deployments, remove IP restrictions or add your server's IP
+- For development, add `localhost:*` to allowed referrers
+
+**❌ Billing Not Enabled**
+- Google requires billing to be enabled for Places API
+- Add a payment method in Google Cloud Console
+- You get $200 free credits monthly
+
+**❌ Business Not Found**
+- The current search is for "Spartan Exteriors Sewell NJ"
+- If your business name differs, update in `server/index.js`:
+  ```javascript
+  const BUSINESS_NAME = 'Your Business Name';
+  const BUSINESS_LOCATION = 'Your City, State';
+  ```
+
+#### 3. Testing Locally
+```bash
+# Create .env file
+echo "GOOGLE_PLACES_API_KEY=your_key_here" > .env
+
+# Run test script
+chmod +x test-local.sh
+./test-local.sh
+
+# Or manually:
+npm run install:all
+npm run build
+npm start
+```
+
+Then visit:
+- Widget: http://localhost:3001/widget
+- Debug: http://localhost:3001/api/debug
+
+#### 4. Railway-Specific Issues
+
+**Setting Environment Variables:**
+1. Go to your Railway project dashboard
+2. Click on your service
+3. Go to "Variables" tab
+4. Add: `GOOGLE_PLACES_API_KEY` with your API key value
+5. The app will automatically redeploy
+
+**Check Deployment Logs:**
+- In Railway dashboard, click "View Logs"
+- Look for error messages starting with ❌
+- Check for "API Key status" on startup
+
+#### 5. Enable Detailed Logging
+
+The server now includes enhanced logging. Check your deployment logs for:
+- 🔍 Search queries being made
+- 🔑 API key status
+- 📍 Google API responses
+- ❌ Specific error messages
+
+### Debug Checklist
+
+- [ ] API key is set in environment variables
+- [ ] Google Places API is enabled
+- [ ] Billing is enabled on Google Cloud
+- [ ] API key has no IP restrictions (or includes server IP)
+- [ ] Business name exactly matches Google Maps listing
+- [ ] Server logs show "API Key status: Configured" on startup
+
+### Still Having Issues?
+
+1. Check the exact error message in the browser console
+2. Visit `/api/debug` endpoint for diagnostic info
+3. Check server logs for detailed error messages
+4. Try searching for your business on Google Maps to verify the exact name
+
 ### Common Issues
 
 1. **"Business not found" error**
